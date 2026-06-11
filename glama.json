@@ -1,0 +1,68 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
+  "name": "afya-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Kenya health system navigation \u2014 NHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.",
+  "license": "MIT",
+  "author": {
+    "name": "Gabriel Mahia",
+    "email": "contact@aikungfu.dev",
+    "url": "https://gabrielmahia.github.io"
+  },
+  "tools": [
+    {
+      "name": "nhif_coverage_query",
+      "description": "Query NHIF coverage for a procedure or condition. Returns benefit limits, member eligibility, and accredited facilities.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "health_facility_finder",
+      "description": "Find accredited health facilities near a Kenya county or sub-county. Returns name, level (dispensary to referral), NHIF status.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "chw_service_lookup",
+      "description": "Lookup Community Health Worker (CHW) services available in a Kenya sub-county. Returns primary care scope and referral pathways.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "maternal_health_guide",
+      "description": "Maternal health milestones, ANC visit schedule, and danger signs for Kenya. Returns trimester-specific guidance.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "essential_medicines",
+      "description": "Query Kenya Essential Medicines List for a condition or drug name. Returns availability tier, cost estimate, and generic options.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    },
+    {
+      "name": "health_rights_query",
+      "description": "Query patient rights under Kenya Health Act 2017. Returns rights, complaint channels, and consumer protection.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true
+      }
+    }
+  ]
+}
