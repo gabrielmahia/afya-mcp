@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 from fastmcp import FastMCP
 
-mcp = FastMCP(name="afya-mcp", description="Kenya health system navigation. DEMO data only.")
+mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.")
 
 NHIF_BENEFITS = {
     "outpatient": "NHIF SHA covers outpatient at accredited facilities. Annual limit varies by contribution tier.",
