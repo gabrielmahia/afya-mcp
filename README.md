@@ -30,3 +30,23 @@ pip install africa-coord-bus
 ```
 
 All servers: [pypi.org/user/gmahia](https://pypi.org/user/gmahia/)
+## AI Architecture: Health Domain RAG
+
+Medical AI requires grounding — ungrounded responses in health contexts cause real harm.
+Use this server as a **RAG entry point**, not a standalone health oracle.
+
+**Research basis:**
+- *RAG Best Practices for Medical Domain* (2026): RAG outperforms chain-of-thought
+  on complex medical reasoning and is more interpretable — critical in clinical contexts.
+- *AfricaNLP 2025/2026*: Only 4 African languages (incl. Swahili) have consistent
+  NLP support. Healthcare is identified as the highest-priority domain needing
+  accurate, grounded AI — and the one with the most critical data gaps.
+- *Multilingual NLP for African Healthcare* (AfricaNLP 2025): Bias and translation
+  errors persist specifically in African health AI contexts.
+
+**Appropriate use:**
+✅ Health facility navigation, NHIF coverage lookup, community health worker support  
+✅ Health information grounded in verified Kenya health system data  
+✅ Triage to appropriate care level  
+❌ Diagnosis, prescription, or clinical decision-making (human-in-the-loop required)
+
