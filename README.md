@@ -50,3 +50,6 @@ Use this server as a **RAG entry point**, not a standalone health oracle.
 ✅ Triage to appropriate care level  
 ❌ Diagnosis, prescription, or clinical decision-making (human-in-the-loop required)
 
+## IP & Collaboration
+
+MIT licensed. Feedback via GitHub Issues only — pull requests are not accepted. Demo data is labeled DEMO and is not suitable for operational decisions. Full policy: [docs/architecture/IP_POLICY.md](docs/architecture/IP_POLICY.md). Security reports: see [SECURITY.md](SECURITY.md).
