@@ -1,4 +1,5 @@
 # afya-mcp
+<!-- mcp-name: io.github.gabrielmahia/afya-mcp -->
 
 [![afya-mcp Glama score](https://glama.ai/mcp/servers/gabrielmahia/afya-mcp/badges/score.svg)](https://glama.ai/mcp/servers/gabrielmahia/afya-mcp)
 [![smithery badge](https://smithery.ai/badge/@gabrielmahia/afya-mcp)](https://smithery.ai/server/@gabrielmahia/afya-mcp)

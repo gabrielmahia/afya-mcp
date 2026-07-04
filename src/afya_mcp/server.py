@@ -99,3 +99,7 @@ def health_rights_query(topic: str) -> dict:
     return {"source": "DEMO — Kenya Health Act 2017", "topic": topic,
             "rights": matched or {"general": "Review Kenya Health Act 2017 at kenyalaw.org"},
             "all_topics": list(RIGHTS.keys()), "disclaimer": "Not legal or medical advice."}
+
+def main() -> None:
+    """Console entry point."""
+    mcp.run()
