@@ -6,9 +6,9 @@ from fastmcp import FastMCP
 mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.")
 
 NHIF_BENEFITS = {
-    "outpatient": "NHIF SHA covers outpatient at accredited facilities. Annual limit varies by contribution tier.",
+    "outpatient": "SHA (which replaced NHIF in Oct 2024) covers outpatient at SHA-contracted facilities. Annual limit varies by contribution tier.",
     "inpatient":  "Inpatient coverage up to 180 days per year. Shared rooms covered; private rooms may attract a top-up.",
-    "maternity":  "Normal delivery: KES 10,000. C-section: KES 30,000. Accredited facilities only.",
+    "maternity":  "NHIF-era figures (normal delivery KES 10,000, C-section KES 30,000) are outdated and UNVERIFIED under SHA; delivery is now covered through SHA with prior registration. Verify at sha.go.ke.",
     "dental":     "Basic dental covered biannually at accredited dental clinics.",
     "optical":    "Optical covered annually — frames and lenses up to KES 5,000.",
     "chronic":    "Chronic disease management covered under SHA Enhancement Fund for specific conditions.",
@@ -23,15 +23,15 @@ FACILITY_LEVELS = {
     "national_referral": "Level 6 — Kenya National Hospital, Kenyatta, Moi Teaching",
 }
 
-@mcp.tool(name="nhif_coverage_query", description="Query NHIF/SHA coverage for a procedure or condition. DEMO.")
+@mcp.tool(name="nhif_coverage_query", description="Query SHA coverage (NHIF's successor) for a procedure or condition. DEMO, unverified.")
 def nhif_coverage_query(query: str, member_tier: Optional[str] = "standard") -> dict:
     q = query.lower()
     matched = {k: v for k, v in NHIF_BENEFITS.items() if k in q or any(w in q for w in k.split("_"))}
     if not matched:
-        matched = {"general": "NHIF SHA covers most inpatient and outpatient services at accredited facilities."}
-    return {"source": "DEMO — verify at nhif.or.ke or sha.go.ke", "query": query,
+        matched = {"general": "SHA (which replaced NHIF in Oct 2024) covers many inpatient and outpatient services at SHA-contracted facilities; scope and limits are UNVERIFIED here."}
+    return {"source": "DEMO (illustrative, unverified) — verify at sha.go.ke", "query": query,
             "member_tier": member_tier, "coverage": matched,
-            "tip": "Always confirm coverage before procedure. Call SHA: 0800720601 (free)."}
+            "tip": "Always confirm coverage before a procedure. Contact SHA via sha.go.ke."}
 
 @mcp.tool(name="health_facility_finder", description="Find accredited health facilities in a Kenya county/sub-county. DEMO.")
 def health_facility_finder(county: str, level: Optional[str] = None, nhif_only: Optional[bool] = True) -> dict:
@@ -69,7 +69,7 @@ def maternal_health_guide(trimester: str, specific_concern: Optional[str] = None
     t = trimester.lower().replace("1st","first").replace("2nd","second").replace("3rd","third")
     data = GUIDE.get(t, GUIDE["first"])
     return {"source": "DEMO — verify with qualified midwife/obstetrician", "trimester": trimester,
-            **data, "nhif_maternity": "Deliver at NHIF-accredited facility. Normal delivery: KES 10,000 covered."}
+            **data, "nhif_maternity": "Deliver at an SHA-contracted facility with prior SHA registration. The NHIF-era KES 10,000 figure is outdated and UNVERIFIED under SHA."}
 
 @mcp.tool(name="essential_medicines", description="Query Kenya Essential Medicines List. DEMO.")
 def essential_medicines(query: str) -> dict:
@@ -78,7 +78,7 @@ def essential_medicines(query: str) -> dict:
                "paracetamol": "Tier 1 — all facilities. OTC available. Avg KES 10/strip.",
                "malaria":     "Artemether-lumefantrine (Coartem) — Tier 1, free at public facilities.",
                "tb":          "First-line TB drugs — free through NTLD programme at public facilities.",
-               "insulin":     "Tier 3 — sub-county hospital and above. NHIF covers with chronic disease card."}
+               "insulin":     "Tier 3 — sub-county hospital and above. NHIF-era chronic-disease card arrangements are outdated; verify SHA coverage."}
     q = query.lower()
     match = next((v for k, v in COMMON.items() if k in q), "Not in sample dataset — check EML at kemsa.go.ke")
     return {"source": "DEMO — Kenya Essential Medicines List 2024", "query": query,
@@ -92,7 +92,7 @@ def health_rights_query(topic: str) -> dict:
         "emergency":       "Any public facility must provide emergency care regardless of ability to pay.",
         "second_opinion":  "Patient has the right to seek a second opinion from another provider.",
         "complaint":       "File complaints: Kenya Medical Practitioners and Dentists Council (KMPDC), or county health department.",
-        "nhif_dispute":    "NHIF disputes: SHA Ombudsman — 0800720601. Must be resolved within 30 days.",
+        "nhif_dispute":    "Coverage disputes: raise with SHA (sha.go.ke). The ombudsman number and 30-day limit previously listed here are UNVERIFIED.",
     }
     t = topic.lower()
     matched = {k: v for k, v in RIGHTS.items() if k in t or any(w in t for w in k.split("_"))}
