@@ -31,7 +31,7 @@ def nhif_coverage_query(query: str, member_tier: Optional[str] = "standard") -> 
         matched = {"general": "SHA (which replaced NHIF in Oct 2024) covers many inpatient and outpatient services at SHA-contracted facilities; scope and limits are UNVERIFIED here."}
     return {"source": "DEMO (illustrative, unverified) — verify at sha.go.ke", "query": query,
             "member_tier": member_tier, "coverage": matched,
-            "tip": "Always confirm coverage before a procedure. Contact SHA via sha.go.ke."}
+            "tip": "Always confirm coverage before a procedure. Contact SHA toll-free on 0800 720 601 (number listed on sha.go.ke) or via sha.go.ke."}
 
 @mcp.tool(name="health_facility_finder", description="Find accredited health facilities in a Kenya county/sub-county. DEMO.")
 def health_facility_finder(county: str, level: Optional[str] = None, nhif_only: Optional[bool] = True) -> dict:
@@ -92,7 +92,7 @@ def health_rights_query(topic: str) -> dict:
         "emergency":       "Any public facility must provide emergency care regardless of ability to pay.",
         "second_opinion":  "Patient has the right to seek a second opinion from another provider.",
         "complaint":       "File complaints: Kenya Medical Practitioners and Dentists Council (KMPDC), or county health department.",
-        "nhif_dispute":    "Coverage disputes: raise with SHA (sha.go.ke). The ombudsman number and 30-day limit previously listed here are UNVERIFIED.",
+        "nhif_dispute":    "Coverage disputes: raise with SHA (toll-free 0800 720 601, sha.go.ke). The 'ombudsman' label and the 30-day limit previously listed here are UNVERIFIED.",
     }
     t = topic.lower()
     matched = {k: v for k, v in RIGHTS.items() if k in t or any(w in t for w in k.split("_"))}

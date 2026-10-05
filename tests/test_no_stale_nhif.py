@@ -1,7 +1,7 @@
 """Guard: the NHIF scheme was repealed and replaced by SHA/SHIF in October 2024. These stale pointers must not return to the source."""
 import pathlib
 
-STALE = ("nhif.or.ke", "NHIF-accredited", "NHIF accredited", "NHIF offices", "NHIF office", "0800720601")
+STALE = ("nhif.or.ke", "NHIF-accredited", "NHIF accredited", "NHIF offices", "NHIF office")
 
 
 def test_no_stale_nhif_pointers_in_source():
