@@ -1,8 +1,8 @@
 {
   "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
   "name": "afya-mcp",
-  "version": "0.1.0",
-  "description": "MCP server for Kenya health system navigation \u2014 NHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.",
+  "version": "0.1.4",
+  "description": "MCP server for Kenya health system navigation — NHIF coverage, facility finder, maternal health, CHW support, and essential medicines",
   "license": "MIT",
   "author": {
     "name": "Gabriel Mahia",
@@ -12,7 +12,7 @@
   "tools": [
     {
       "name": "nhif_coverage_query",
-      "description": "Query NHIF coverage for a procedure or condition. Returns benefit limits, member eligibility, and accredited facilities.",
+      "description": "Query SHA coverage (NHIF's successor) for a procedure or condition. DEMO, unverified.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -21,7 +21,7 @@
     },
     {
       "name": "health_facility_finder",
-      "description": "Find accredited health facilities near a Kenya county or sub-county. Returns name, level (dispensary to referral), NHIF status.",
+      "description": "Find accredited health facilities in a Kenya county/sub-county. DEMO.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -30,7 +30,7 @@
     },
     {
       "name": "chw_service_lookup",
-      "description": "Lookup Community Health Worker (CHW) services available in a Kenya sub-county. Returns primary care scope and referral pathways.",
+      "description": "Lookup CHW services in a Kenya sub-county. DEMO.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -39,7 +39,7 @@
     },
     {
       "name": "maternal_health_guide",
-      "description": "Maternal health milestones, ANC visit schedule, and danger signs for Kenya. Returns trimester-specific guidance.",
+      "description": "ANC milestones, danger signs, and delivery guidance for Kenya. DEMO.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -48,7 +48,7 @@
     },
     {
       "name": "essential_medicines",
-      "description": "Query Kenya Essential Medicines List for a condition or drug name. Returns availability tier, cost estimate, and generic options.",
+      "description": "Query Kenya Essential Medicines List. DEMO.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -57,7 +57,7 @@
     },
     {
       "name": "health_rights_query",
-      "description": "Query patient rights under Kenya Health Act 2017. Returns rights, complaint channels, and consumer protection.",
+      "description": "Patient rights under Kenya Health Act 2017. DEMO.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -78,5 +78,8 @@
     "mcp",
     "useful-rails",
     "ai-agents"
+  ],
+  "maintainers": [
+    "gabrielmahia"
   ]
 }
