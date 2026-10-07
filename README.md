@@ -12,11 +12,11 @@ Install: `pip install afya-mcp` · Use with any MCP client.
 
 ---
 
-MCP server for Kenya health system navigation — NHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.
+MCP server for Kenya health system navigation — SHA/SHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.
 
 ## Part of the East Africa Coordination Stack
 
-This MCP server is one of 32 tools in the Kenya coordination infrastructure.
+This MCP server is part of the Kenya coordination infrastructure.
 It connects to [`africa-coord-bus`](https://github.com/gabrielmahia/africa-coord-bus) — the coordination
 event bus that routes signals between domains automatically.
 
@@ -46,7 +46,7 @@ Use this server as a **RAG entry point**, not a standalone health oracle.
   errors persist specifically in African health AI contexts.
 
 **Appropriate use:**
-✅ Health facility navigation, NHIF coverage lookup, community health worker support  
+✅ Health facility navigation, SHA/SHIF coverage lookup, community health worker support  
 ✅ Health information grounded in verified Kenya health system data  
 ✅ Triage to appropriate care level  
 ❌ Diagnosis, prescription, or clinical decision-making (human-in-the-loop required)
@@ -58,7 +58,7 @@ MIT licensed. Feedback via GitHub Issues only — pull requests are not accepted
 <!-- interconnect:v1 -->
 ## Part of the East Africa coordination stack
 
-- **Install & run:** `pip install reli-cli && reli list` — 33 MCP servers on the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.gabrielmahia`
+- **Install & run:** `pip install reli-cli && reli list` — the MCP servers on the [official MCP Registry](https://registry.modelcontextprotocol.io) under `io.github.gabrielmahia`
 - **Evaluate any model on Swahili agent tasks:** [kipimo](https://github.com/gabrielmahia/kipimo) · [dataset](https://huggingface.co/datasets/gmahia/kipimo) · [leaderboard](https://huggingface.co/spaces/gmahia/kipimo-leaderboard)
 - **Coordinate across servers:** [africa-coord-bus](https://pypi.org/project/africa-coord-bus/) — offline-first event bus with a built-in Kenya routing table
 - **Datasets:** [huggingface.co/gmahia](https://huggingface.co/gmahia) · **Docs hub:** [nairobi-stack](https://github.com/gabrielmahia/nairobi-stack)
