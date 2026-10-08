@@ -1,7 +1,12 @@
 """AfyaMCP — Kenya Health System Navigation (6 tools). All data DEMO."""
 from __future__ import annotations
+
 from typing import Optional
+
 from fastmcp import FastMCP
+
+# Annotations tell clients which tools are safe to auto-approve (read-only, no side effects).
+READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": False}
 
 mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.")
 
@@ -23,8 +28,8 @@ FACILITY_LEVELS = {
     "national_referral": "Level 6 — Kenya National Hospital, Kenyatta, Moi Teaching",
 }
 
-@mcp.tool(name="nhif_coverage_query", description="Query SHA coverage (NHIF's successor) for a procedure or condition. DEMO, unverified.")
-def nhif_coverage_query(query: str, member_tier: Optional[str] = "standard") -> dict:
+@mcp.tool(name="nhif_coverage_query", description="Query SHA coverage (NHIF's successor) for a procedure or condition. DEMO, unverified.", annotations=READ_ONLY)
+def nhif_coverage_query(query: str, member_tier: str | None = "standard") -> dict:
     q = query.lower()
     matched = {k: v for k, v in NHIF_BENEFITS.items() if k in q or any(w in q for w in k.split("_"))}
     if not matched:
@@ -33,8 +38,8 @@ def nhif_coverage_query(query: str, member_tier: Optional[str] = "standard") -> 
             "member_tier": member_tier, "coverage": matched,
             "tip": "Always confirm coverage before a procedure. Contact SHA toll-free on 0800 720 601 (number listed on sha.go.ke) or via sha.go.ke."}
 
-@mcp.tool(name="health_facility_finder", description="Find accredited health facilities in a Kenya county/sub-county. DEMO.")
-def health_facility_finder(county: str, level: Optional[str] = None, nhif_only: Optional[bool] = True) -> dict:
+@mcp.tool(name="health_facility_finder", description="Find accredited health facilities in a Kenya county/sub-county. DEMO.", annotations=READ_ONLY)
+def health_facility_finder(county: str, level: str | None = None, nhif_only: bool | None = True) -> dict:
     sample = [
         {"name": f"{county} County Referral Hospital", "level": "county_hospital", "nhif_accredited": True, "county": county},
         {"name": f"{county} Sub-County Hospital", "level": "sub_county_hospital", "nhif_accredited": True, "county": county},
@@ -48,7 +53,7 @@ def health_facility_finder(county: str, level: Optional[str] = None, nhif_only: 
     return {"source": "DEMO — verify at KenyaEMR/DHIS2", "county": county,
             "facilities": sample, "tip": "For real-time facility data: ehealth.go.ke"}
 
-@mcp.tool(name="chw_service_lookup", description="Lookup CHW services in a Kenya sub-county. DEMO.")
+@mcp.tool(name="chw_service_lookup", description="Lookup CHW services in a Kenya sub-county. DEMO.", annotations=READ_ONLY)
 def chw_service_lookup(sub_county: str) -> dict:
     return {"source": "DEMO", "sub_county": sub_county,
             "chw_services": ["Health education","Malaria prevention","Maternal-child health","Immunisation referral",
@@ -56,8 +61,8 @@ def chw_service_lookup(sub_county: str) -> dict:
             "referral_pathway": "CHW → Health Centre → Sub-County Hospital → County Referral",
             "contact": "Contact your county health department for CHW assignment in your village."}
 
-@mcp.tool(name="maternal_health_guide", description="ANC milestones, danger signs, and delivery guidance for Kenya. DEMO.")
-def maternal_health_guide(trimester: str, specific_concern: Optional[str] = None) -> dict:
+@mcp.tool(name="maternal_health_guide", description="ANC milestones, danger signs, and delivery guidance for Kenya. DEMO.", annotations=READ_ONLY)
+def maternal_health_guide(trimester: str, specific_concern: str | None = None) -> dict:
     GUIDE = {
         "first": {"anc_visits": "At least 1 visit before 12 weeks", "key_tests": ["Blood group","Hemoglobin","HIV test","Syphilis screening"],
                   "danger_signs": ["Heavy bleeding","Severe vomiting","Fever above 38°C"]},
@@ -71,7 +76,7 @@ def maternal_health_guide(trimester: str, specific_concern: Optional[str] = None
     return {"source": "DEMO — verify with qualified midwife/obstetrician", "trimester": trimester,
             **data, "nhif_maternity": "Deliver at an SHA-contracted facility with prior SHA registration. The NHIF-era KES 10,000 figure is outdated and UNVERIFIED under SHA."}
 
-@mcp.tool(name="essential_medicines", description="Query Kenya Essential Medicines List. DEMO.")
+@mcp.tool(name="essential_medicines", description="Query Kenya Essential Medicines List. DEMO.", annotations=READ_ONLY)
 def essential_medicines(query: str) -> dict:
     COMMON = {"amoxicillin": "Tier 1 — dispensary level. Generic available. Avg KES 50/course.",
                "metformin":   "Tier 2 — health centre. Generic available. Avg KES 30/month.",
@@ -84,7 +89,7 @@ def essential_medicines(query: str) -> dict:
     return {"source": "DEMO — Kenya Essential Medicines List 2024", "query": query,
             "information": match, "kemsa": "kemsa.go.ke", "disclaimer": "Consult a pharmacist or prescriber."}
 
-@mcp.tool(name="health_rights_query", description="Patient rights under Kenya Health Act 2017. DEMO.")
+@mcp.tool(name="health_rights_query", description="Patient rights under Kenya Health Act 2017. DEMO.", annotations=READ_ONLY)
 def health_rights_query(topic: str) -> dict:
     RIGHTS = {
         "consent":         "Informed consent required before any procedure. Patient may refuse treatment.",
