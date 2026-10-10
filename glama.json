@@ -2,7 +2,7 @@
   "$schema": "https://glama.ai/mcp/schemas/1.0.0/server.json",
   "name": "afya-mcp",
   "version": "0.1.6",
-  "description": "MCP server for Kenya health system navigation — NHIF coverage, facility finder, maternal health, CHW support, and essential medicines",
+  "description": "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder, maternal health, CHW support and essential medicines",
   "license": "MIT",
   "author": {
     "name": "Gabriel Mahia",
