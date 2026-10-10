@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.github.gabrielmahia/afya-mcp",
-  "description": "MCP server for health-service coordination in East Africa (afya = health)",
+  "description": "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder",
   "repository": {
     "url": "https://github.com/gabrielmahia/afya-mcp",
     "source": "github"
   },
-  "version": "0.1.5",
+  "version": "0.1.6",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "afya-mcp",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "transport": {
         "type": "stdio"
       }

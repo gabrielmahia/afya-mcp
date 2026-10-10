@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "afya-mcp"
-version = "0.1.5"
-description = "MCP server for Kenya health system navigation — NHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools."
+version = "0.1.6"
+description = "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder, maternal health, CHW support and essential medicines"
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"

@@ -4,7 +4,7 @@
   "project": "afya-mcp",
   "stable_branch": "main",
   "integration_branch": "main",
-  "purpose": "MCP server for Kenya health system navigation — NHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.",
+  "purpose": "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder, maternal health, CHW support and essential medicines.",
   "cold_start": [
     "AGENTS.md",
     "README.md"
