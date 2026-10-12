@@ -12,7 +12,7 @@
   "tools": [
     {
       "name": "nhif_coverage_query",
-      "description": "Query SHA coverage (NHIF's successor) for a procedure or condition. DEMO, unverified.",
+      "description": "Find what Kenya's public health insurance covers for a topic such as maternity, surgery or dialysis. Use when someone asks whether a service is covered. The tool name is historical: NHIF was replaced by SHA (SHIF) in October 2024, and the results are a small illustrative table, not current benefit rules. Keywords in query select matching entries; if none match it returns a general SHA note. Returns the source label, the query, member_tier (echoed back), the matching coverage entries and a tip with SHA's contact details. Labelled DEMO and unverified: confirm at sha.go.ke before relying. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -21,7 +21,7 @@
     },
     {
       "name": "health_facility_finder",
-      "description": "Find accredited health facilities in a Kenya county/sub-county. DEMO.",
+      "description": "Return a TEMPLATE list of facility types for a county (county referral hospital, sub-county hospital, health centre, dispensary). Use when you need to illustrate the referral levels, NOT to find a real facility: the names are generated from the county name and this is not a register (for real facilities use the Kenya Master Health Facility List at kmhfl.health.go.ke). level keeps one facility level; nhif_only (default true) keeps facilities flagged accredited, a sample flag that refers to NHIF, since replaced by SHA. Returns the source label, the county, the matching sample facilities and a pointer to ehealth.go.ke. Labelled DEMO. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -30,7 +30,7 @@
     },
     {
       "name": "chw_service_lookup",
-      "description": "Lookup CHW services in a Kenya sub-county. DEMO.",
+      "description": "List the services Community Health Workers (CHWs) typically provide and the referral pathway from CHW to health centre, sub-county hospital and county referral hospital. Use when someone asks what a CHW does or where a case is referred. The list is the same for every sub-county: sub_county is only echoed back and no real CHW assignment data is held. Returns the source label, sub_county, chw_services, referral_pathway and a contact note. Labelled DEMO. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -39,7 +39,7 @@
     },
     {
       "name": "maternal_health_guide",
-      "description": "ANC milestones, danger signs, and delivery guidance for Kenya. DEMO.",
+      "description": "Antenatal care guidance by trimester: suggested antenatal visits, key tests and the danger signs that need urgent care, plus a note on SHA maternity cover. Use when someone asks what to expect or watch for in pregnancy. trimester must be first, second or third (1st, 2nd and 3rd also work); anything else returns an error listing the valid values instead of guessing. Returns the matching trimester's anc_visits, key_tests and danger_signs, the source label and an SHA note. General information labelled DEMO, not medical advice: danger signs mean go to a facility now. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -48,7 +48,7 @@
     },
     {
       "name": "essential_medicines",
-      "description": "Query Kenya Essential Medicines List. DEMO.",
+      "description": "Look up where a common medicine sits in Kenya's tiered supply and what it typically costs or whether it is free. Use when someone asks about the availability or price of a medicine such as amoxicillin, metformin, paracetamol, insulin, or malaria or TB drugs. Matches the first sample entry whose name appears in query; if none match it says the medicine is not in the sample dataset and points to the Essential Medicines List at kemsa.go.ke. Returns the source label, the query, the matching information, the KEMSA site and a disclaimer. A small sample labelled DEMO: consult a pharmacist or prescriber. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -57,7 +57,7 @@
     },
     {
       "name": "health_rights_query",
-      "description": "Patient rights under Kenya Health Act 2017. DEMO.",
+      "description": "Explain patient rights under Kenya's Health Act 2017: consent, privacy, emergency care, second opinion, complaints and coverage disputes. Use when someone asks what they are entitled to as a patient or where to complain. Keywords in topic select entries; if none match it returns a pointer to the Act at kenyalaw.org. Returns the source label, the topic, the matching rights, all_topics (the topics that exist) and a not-legal-advice disclaimer. Static summary labelled DEMO: verify with KMPDC or the county health department. Read-only; no side effects.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
