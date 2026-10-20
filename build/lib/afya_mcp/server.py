@@ -1,0 +1,113 @@
+"""AfyaMCP — Kenya Health System Navigation (6 tools). All data DEMO."""
+from __future__ import annotations
+
+from typing import Annotated, Optional
+
+from fastmcp import FastMCP
+from pydantic import Field
+
+# Annotations tell clients which tools are safe to auto-approve (read-only, no side effects).
+READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": False}
+
+mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.")
+
+NHIF_BENEFITS = {
+    "outpatient": "SHA (which replaced NHIF in Oct 2024) covers outpatient at SHA-contracted facilities. Annual limit varies by contribution tier.",
+    "inpatient":  "Inpatient coverage up to 180 days per year. Shared rooms covered; private rooms may attract a top-up.",
+    "maternity":  "NHIF-era figures (normal delivery KES 10,000, C-section KES 30,000) are outdated and UNVERIFIED under SHA; delivery is now covered through SHA with prior registration. Verify at sha.go.ke.",
+    "dental":     "Basic dental covered biannually at accredited dental clinics.",
+    "optical":    "Optical covered annually — frames and lenses up to KES 5,000.",
+    "chronic":    "Chronic disease management covered under SHA Enhancement Fund for specific conditions.",
+    "dialysis":   "Renal dialysis covered at designated centres under SHA.",
+}
+
+FACILITY_LEVELS = {
+    "dispensary": "Level 2 — basic outpatient, maternal, immunisation",
+    "health_centre": "Level 3 — outpatient, inpatient beds, minor surgery",
+    "sub_county_hospital": "Level 4 — general surgery, lab, radiology",
+    "county_hospital": "Level 5 — specialist services, ICU",
+    "national_referral": "Level 6 — Kenya National Hospital, Kenyatta, Moi Teaching",
+}
+
+@mcp.tool(name="nhif_coverage_query", description="Find what Kenya's public health insurance covers for a topic such as maternity, surgery or dialysis. Use when someone asks whether a service is covered. The tool name is historical: NHIF was replaced by SHA (SHIF) in October 2024, and the results are a small illustrative table, not current benefit rules. Keywords in query select matching entries; if none match it returns a general SHA note. Returns the source label, the query, member_tier (echoed back), the matching coverage entries and a tip with SHA's contact details. Labelled DEMO and unverified: confirm at sha.go.ke before relying. Read-only; no side effects.", annotations=READ_ONLY)
+def nhif_coverage_query(query: Annotated[str, Field(description="What you want to know is covered, such as maternity or surgery. Keywords select entries.")], member_tier: Annotated[str | None, Field(description="Echoed back in the response; it does not change the coverage returned (default standard).")] = "standard") -> dict:
+    q = query.lower()
+    matched = {k: v for k, v in NHIF_BENEFITS.items() if k in q or any(w in q for w in k.split("_"))}
+    if not matched:
+        matched = {"general": "SHA (which replaced NHIF in Oct 2024) covers many inpatient and outpatient services at SHA-contracted facilities; scope and limits are UNVERIFIED here."}
+    return {"source": "DEMO (illustrative, unverified) — verify at sha.go.ke", "query": query,
+            "member_tier": member_tier, "coverage": matched,
+            "tip": "Always confirm coverage before a procedure. Contact SHA toll-free on 0800 720 601 (number listed on sha.go.ke) or via sha.go.ke."}
+
+@mcp.tool(name="health_facility_finder", description="Return a TEMPLATE list of facility types for a county (county referral hospital, sub-county hospital, health centre, dispensary). Use when you need to illustrate the referral levels, NOT to find a real facility: the names are generated from the county name and this is not a register (for real facilities use the Kenya Master Health Facility List at kmhfl.health.go.ke). level keeps one facility level; nhif_only (default true) keeps facilities flagged accredited, a sample flag that refers to NHIF, since replaced by SHA. Returns the source label, the county, the matching sample facilities and a pointer to ehealth.go.ke. Labelled DEMO. Read-only; no side effects.", annotations=READ_ONLY)
+def health_facility_finder(county: Annotated[str, Field(description="County name; used to generate the template facility names.")], level: Annotated[str | None, Field(description="Optional level to keep, such as county_hospital, sub_county_hospital, health_centre or dispensary.")] = None, nhif_only: Annotated[bool | None, Field(description="Keep only facilities flagged accredited (default true). The flag is sample data that refers to NHIF, now replaced by SHA.")] = True) -> dict:
+    sample = [
+        {"name": f"{county} County Referral Hospital", "level": "county_hospital", "nhif_accredited": True, "county": county},
+        {"name": f"{county} Sub-County Hospital", "level": "sub_county_hospital", "nhif_accredited": True, "county": county},
+        {"name": f"Central Health Centre — {county}", "level": "health_centre", "nhif_accredited": nhif_only, "county": county},
+        {"name": f"Community Dispensary — {county}", "level": "dispensary", "nhif_accredited": False, "county": county},
+    ]
+    if level:
+        sample = [f for f in sample if level.lower() in f["level"]]
+    if nhif_only:
+        sample = [f for f in sample if f["nhif_accredited"]]
+    return {"source": "DEMO — verify at KenyaEMR/DHIS2", "county": county,
+            "facilities": sample, "tip": "For real-time facility data: ehealth.go.ke"}
+
+@mcp.tool(name="chw_service_lookup", description="List the services Community Health Workers (CHWs) typically provide and the referral pathway from CHW to health centre, sub-county hospital and county referral hospital. Use when someone asks what a CHW does or where a case is referred. The list is the same for every sub-county: sub_county is only echoed back and no real CHW assignment data is held. Returns the source label, sub_county, chw_services, referral_pathway and a contact note. Labelled DEMO. Read-only; no side effects.", annotations=READ_ONLY)
+def chw_service_lookup(sub_county: Annotated[str, Field(description="Sub-county name; only echoed back, the services returned are the same for every sub-county.")]) -> dict:
+    return {"source": "DEMO", "sub_county": sub_county,
+            "chw_services": ["Health education","Malaria prevention","Maternal-child health","Immunisation referral",
+                             "TB contact tracing","Nutrition screening","NCDs follow-up"],
+            "referral_pathway": "CHW → Health Centre → Sub-County Hospital → County Referral",
+            "contact": "Contact your county health department for CHW assignment in your village."}
+
+@mcp.tool(name="maternal_health_guide", description="Antenatal care guidance by trimester: suggested antenatal visits, key tests and the danger signs that need urgent care, plus a note on SHA maternity cover. Use when someone asks what to expect or watch for in pregnancy. trimester must be first, second or third (1st, 2nd and 3rd also work); anything else returns an error listing the valid values instead of guessing. Returns the matching trimester's anc_visits, key_tests and danger_signs, the source label and an SHA note. General information labelled DEMO, not medical advice: danger signs mean go to a facility now. Read-only; no side effects.", annotations=READ_ONLY)
+def maternal_health_guide(trimester: Annotated[str, Field(description="first, second or third (1st, 2nd and 3rd also work). Other values return an error.")], specific_concern: Annotated[str | None, Field(description="Accepted but currently ignored; it does not change the result.")] = None) -> dict:
+    GUIDE = {
+        "first": {"anc_visits": "At least 1 visit before 12 weeks", "key_tests": ["Blood group","Hemoglobin","HIV test","Syphilis screening"],
+                  "danger_signs": ["Heavy bleeding","Severe vomiting","Fever above 38°C"]},
+        "second": {"anc_visits": "2 visits (20 and 26 weeks)", "key_tests": ["Ultrasound","Glucose screening","Tetanus toxoid"],
+                   "danger_signs": ["Reduced fetal movement","Severe headache","Visual disturbances"]},
+        "third": {"anc_visits": "2 visits (32 and 36 weeks)", "key_tests": ["Presentation check","Birth plan review"],
+                  "danger_signs": ["Labour before 37 weeks","Absence of fetal movement","Severe swelling"]},
+    }
+    t = trimester.lower().replace("1st","first").replace("2nd","second").replace("3rd","third")
+    if t not in GUIDE:
+        return {"error": f"Unknown trimester {trimester!r}. Use first, second or third.", "valid_trimesters": list(GUIDE)}
+    data = GUIDE[t]
+    return {"source": "DEMO — verify with qualified midwife/obstetrician", "trimester": trimester,
+            **data, "nhif_maternity": "Deliver at an SHA-contracted facility with prior SHA registration. The NHIF-era KES 10,000 figure is outdated and UNVERIFIED under SHA."}
+
+@mcp.tool(name="essential_medicines", description="Look up where a common medicine sits in Kenya's tiered supply and what it typically costs or whether it is free. Use when someone asks about the availability or price of a medicine such as amoxicillin, metformin, paracetamol, insulin, or malaria or TB drugs. Matches the first sample entry whose name appears in query; if none match it says the medicine is not in the sample dataset and points to the Essential Medicines List at kemsa.go.ke. Returns the source label, the query, the matching information, the KEMSA site and a disclaimer. A small sample labelled DEMO: consult a pharmacist or prescriber. Read-only; no side effects.", annotations=READ_ONLY)
+def essential_medicines(query: Annotated[str, Field(description="A medicine or condition, such as amoxicillin, insulin, malaria or tb.")]) -> dict:
+    COMMON = {"amoxicillin": "Tier 1 — dispensary level. Generic available. Avg KES 50/course.",
+               "metformin":   "Tier 2 — health centre. Generic available. Avg KES 30/month.",
+               "paracetamol": "Tier 1 — all facilities. OTC available. Avg KES 10/strip.",
+               "malaria":     "Artemether-lumefantrine (Coartem) — Tier 1, free at public facilities.",
+               "tb":          "First-line TB drugs — free through NTLD programme at public facilities.",
+               "insulin":     "Tier 3 — sub-county hospital and above. NHIF-era chronic-disease card arrangements are outdated; verify SHA coverage."}
+    q = query.lower()
+    match = next((v for k, v in COMMON.items() if k in q), "Not in sample dataset — check EML at kemsa.go.ke")
+    return {"source": "DEMO — Kenya Essential Medicines List 2024", "query": query,
+            "information": match, "kemsa": "kemsa.go.ke", "disclaimer": "Consult a pharmacist or prescriber."}
+
+@mcp.tool(name="health_rights_query", description="Explain patient rights under Kenya's Health Act 2017: consent, privacy, emergency care, second opinion, complaints and coverage disputes. Use when someone asks what they are entitled to as a patient or where to complain. Keywords in topic select entries; if none match it returns a pointer to the Act at kenyalaw.org. Returns the source label, the topic, the matching rights, all_topics (the topics that exist) and a not-legal-advice disclaimer. Static summary labelled DEMO: verify with KMPDC or the county health department. Read-only; no side effects.", annotations=READ_ONLY)
+def health_rights_query(topic: Annotated[str, Field(description="Rights topic such as consent, privacy, emergency, second_opinion, complaint or nhif_dispute.")]) -> dict:
+    RIGHTS = {
+        "consent":         "Informed consent required before any procedure. Patient may refuse treatment.",
+        "privacy":         "Medical records are confidential. Cannot be shared without consent (HIV Act, Data Protection Act).",
+        "emergency":       "Any public facility must provide emergency care regardless of ability to pay.",
+        "second_opinion":  "Patient has the right to seek a second opinion from another provider.",
+        "complaint":       "File complaints: Kenya Medical Practitioners and Dentists Council (KMPDC), or county health department.",
+        "nhif_dispute":    "Coverage disputes: raise with SHA (toll-free 0800 720 601, sha.go.ke). The 'ombudsman' label and the 30-day limit previously listed here are UNVERIFIED.",
+    }
+    t = topic.lower()
+    matched = {k: v for k, v in RIGHTS.items() if k in t or any(w in t for w in k.split("_"))}
+    return {"source": "DEMO — Kenya Health Act 2017", "topic": topic,
+            "rights": matched or {"general": "Review Kenya Health Act 2017 at kenyalaw.org"},
+            "all_topics": list(RIGHTS.keys()), "disclaimer": "Not legal or medical advice."}
+
+def main() -> None:
+    """Console entry point."""
+    mcp.run()
