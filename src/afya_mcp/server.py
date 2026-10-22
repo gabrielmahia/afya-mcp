@@ -1,6 +1,8 @@
 """AfyaMCP — Kenya Health System Navigation (6 tools). All data DEMO."""
 from __future__ import annotations
 
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 from typing import Annotated, Optional
 
 from fastmcp import FastMCP
@@ -9,7 +11,13 @@ from pydantic import Field
 # Annotations tell clients which tools are safe to auto-approve (read-only, no side effects).
 READ_ONLY = {"readOnlyHint": True, "idempotentHint": True, "openWorldHint": False}
 
-mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.")
+try:
+    _VERSION = _pkg_version("afya-mcp")
+except PackageNotFoundError:  # a source tree that was never installed
+    _VERSION = "0+unknown"
+
+
+mcp = FastMCP(name="afya-mcp", instructions="Kenya health system navigation. DEMO data only.", version=_VERSION)
 
 NHIF_BENEFITS = {
     "outpatient": "SHA (which replaced NHIF in Oct 2024) covers outpatient at SHA-contracted facilities. Annual limit varies by contribution tier.",
