@@ -1,6 +1,13 @@
 """AfyaMCP — Kenya Health System Navigation (6 tools). All data DEMO."""
 from __future__ import annotations
 
+import json
+import urllib.error
+import urllib.parse
+import urllib.request
+from datetime import UTC as _UTC
+from datetime import datetime as _dt
+from datetime import timedelta as _td
 from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _pkg_version
 from typing import Annotated, Optional
@@ -115,6 +122,53 @@ def health_rights_query(topic: Annotated[str, Field(description="Rights topic su
     return {"source": "DEMO — Kenya Health Act 2017", "topic": topic,
             "rights": matched or {"general": "Review Kenya Health Act 2017 at kenyalaw.org"},
             "all_topics": list(RIGHTS.keys()), "disclaimer": "Not legal or medical advice."}
+
+
+# ── Live data (free public services) ─────────────────────────────────
+# Live tools change nothing anywhere, but they contact an outside service, and clients should know that.
+LIVE_READ_ONLY = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": True}
+LIVE_TOOLS = {"dhs_health_indicator"}
+_LIVE_UA = {"User-Agent": "afya-mcp (https://github.com/gabrielmahia/afya-mcp)", "Accept": "application/json"}
+_LIVE_ERRORS = (urllib.error.URLError, TimeoutError, ValueError, KeyError, TypeError, IndexError)
+
+
+def _live_get(url: str, params: dict | None = None, timeout: float = 20.0):
+    if params:
+        url = url + "?" + urllib.parse.urlencode(params)
+    req = urllib.request.Request(url, headers=_LIVE_UA)
+    with urllib.request.urlopen(req, timeout=timeout) as r:  # fixed https endpoints only
+        return json.loads(r.read().decode("utf-8"))
+
+
+def _live_meta(source: str, attribution: str) -> dict:
+    return {"source": source, "attribution": attribution, "retrieved_at": _dt.now(_UTC).isoformat(timespec="seconds")}
+
+DHS_INDICATORS = {"full_vaccination": "CH_VACC_C_BAS", "stunting": "CN_NUTS_C_HA2", "skilled_birth_attendance": "RH_DELA_C_SKP",
+                  "modern_contraception": "FP_CUSA_W_MOD", "under5_mortality": "CM_ECMR_C_U5M"}
+
+
+@mcp.tool(name="dhs_health_indicator", annotations=LIVE_READ_ONLY, description="Get an official Kenya health indicator from the 2022 Kenya Demographic and Health Survey through the free DHS Program API, nationally or for one county: full child vaccination, child stunting, skilled birth attendance, modern contraceptive use or under-five mortality. Use when someone needs an authoritative survey figure for Kenya or a county, for planning, reporting or comparison. Returns the value or values with what each measures, the survey, the source with its citation and the retrieval time; on a network or service failure it returns an error instead of figures. Read-only; contacts an external service.")
+def dhs_health_indicator(indicator: Annotated[str, Field(description="One of: full_vaccination, stunting, skilled_birth_attendance, modern_contraception, under5_mortality.")],
+                         county: Annotated[str | None, Field(description="Optional Kenyan county, for example Kisumu or Turkana. Leave empty for the national figure.")] = None) -> dict:
+    meta = _live_meta("LIVE — The DHS Program Indicator API (api.dhsprogram.com), Kenya DHS 2022", "Kenya National Bureau of Statistics and ICF, Kenya Demographic and Health Survey 2022, via the DHS Program API; cite the survey when using figures.")
+    code = DHS_INDICATORS.get((indicator or "").strip().lower())
+    if not code:
+        return {"error": f"indicator must be one of {sorted(DHS_INDICATORS)}", **meta}
+    params = {"countryIds": "KE", "indicatorIds": code, "surveyIds": "KE2022DHS", "f": "json", "returnFields": "Indicator,Value,CharacteristicLabel,ByVariableLabel,CILow,CIHigh,DenominatorWeighted"}
+    if county:
+        params["breakdown"] = "subnational"
+    try:
+        data = _live_get("https://api.dhsprogram.com/rest/dhs/data", params)["Data"]
+    except _LIVE_ERRORS as e:
+        return {"error": f"the DHS Program API did not return usable data ({type(e).__name__}); no figures are given without it. Try again later.", **meta}
+    want = county.strip().lower() if county else "total"
+    rows = [d for d in data if d.get("CharacteristicLabel", "").lstrip(".").strip().lower() == want]
+    if not rows:
+        return {"error": f"no 2022 DHS value for {county or 'Kenya'} on this indicator", **meta}
+    values = [{"value": d.get("Value"), "measure": d.get("Indicator"), "reference": d.get("ByVariableLabel") or None, "ci_low": d.get("CILow") or None, "ci_high": d.get("CIHigh") or None} for d in rows]
+    return {"indicator": indicator, "dhs_code": code, "area": county or "Kenya", "survey": "Kenya DHS 2022", "values": values,
+            "note": "Survey estimates: county figures rest on smaller samples and are less precise than national ones. Where two values are shown they cover different reference periods.", **meta}
+
 
 def main() -> None:
     """Console entry point."""
