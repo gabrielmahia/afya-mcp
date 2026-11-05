@@ -8,7 +8,13 @@
 Install: `pip install afya-mcp` · Use with any MCP client.
 
 
-MCP server for Kenya health system navigation — SHA/SHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 6 tools.
+MCP server for Kenya health system navigation — SHA/SHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 7 tools.
+
+## Live data
+
+- `dhs_health_indicator`: official Kenya DHS 2022 figures (vaccination, stunting, skilled birth attendance, modern contraception, under-five mortality), nationally or by county, via the [DHS Program API](https://api.dhsprogram.com).
+
+Each live answer names its source, attribution and retrieval time; if a service does not answer, the tool returns an error instead of a number. The other tools are unchanged.
 
 ## Part of the East Africa Coordination Stack
 
