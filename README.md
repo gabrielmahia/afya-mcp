@@ -2,11 +2,8 @@
 <!-- mcp-name: io.github.gabrielmahia/afya-mcp -->
 
 [![afya-mcp Glama score](https://glama.ai/mcp/servers/gabrielmahia/afya-mcp/badges/score.svg)](https://glama.ai/mcp/servers/gabrielmahia/afya-mcp)
-[![smithery badge](https://smithery.ai/badge/@gabrielmahia/afya-mcp)](https://smithery.ai/server/@gabrielmahia/afya-mcp)
-
 
 Install: `pip install afya-mcp` · Use with any MCP client.
-
 
 MCP server for Kenya health system navigation — SHA/SHIF coverage, facility finder, maternal health, CHW support, and essential medicines. 7 tools.
 
