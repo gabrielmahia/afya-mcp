@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "afya-mcp"
-version = "0.1.12"
+version = "0.1.13"
 description = "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder, maternal health, CHW support and essential medicines"
 readme = "README.md"
 license = "MIT"
@@ -26,6 +26,7 @@ license-files = ["LICENSE"]
 afya-mcp = "afya_mcp.server:mcp.run"
 
 [project.urls]
+Issues = "https://github.com/gabrielmahia/afya-mcp/issues"
 Homepage = "https://github.com/gabrielmahia/afya-mcp"
 Documentation = "https://github.com/gabrielmahia/nairobi-stack"
 "MCP Registry" = "https://registry.modelcontextprotocol.io"
