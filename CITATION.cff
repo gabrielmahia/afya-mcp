@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 type: software
 title: "afya-mcp"
 abstract: "MCP server for Kenya health system navigation: SHA/SHIF coverage (NHIF's successor), facility finder, maternal health, CHW support and essential medicines"
-version: "0.1.13"
+version: "0.1.14"
 authors:
   - family-names: "Mahia"
     given-names: "Gabriel"
